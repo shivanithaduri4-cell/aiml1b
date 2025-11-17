@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Audio + Video Controls — Custom Widths & Autoplay Demo</title>
+  <style>
+    :root{
+      /* tweak these values to change the displayed widths */
+      --video-width: 800px; /* example: 800px or 80% */
+      --audio-width: 600px; /* example: 600px or 60% */
+    }
+
+    body{
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      padding: 2rem;
+      background: #f6f7fb;
+      color: #111827;
+      line-height: 1.4;
+    }
+
+    h1{font-size:1.5rem;margin-bottom:.5rem}
+    p.lead{margin-top:0;margin-bottom:1.25rem;color:#374151}
+
+    .media-row{display:flex;flex-direction:column;gap:1.25rem;max-width:1100px}
+
+    .media-card{
+      background: #fff;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(15,23,42,0.06);
+    }
+
+    /* set custom widths for the elements */
+    .video-wrap{width:var(--video-width);max-width:100%;}
+    .audio-wrap{width:var(--audio-width);max-width:100%;}
+
+    /* small helper UI for autoplay fallbacks */
+    .notice{font-size:.9rem;color:#6b7280;margin-top:.5rem}
+    .play-fallback{display:flex;gap:.5rem;align-items:center;margin-top:.5rem}
+    .btn{padding:.45rem .75rem;border-radius:8px;border:1px solid #e5e7eb;background:#fff;cursor:pointer}
+  </style>
+</head>
+<body>
+  <h1>Audio & Video Controls — custom widths + autoplay</h1>
+  <p class="lead">This demo shows an HTML <code>&lt;video&gt;</code> and <code>&lt;audio&gt;</code> element with custom widths and autoplay behavior. Some browsers block autoplay with sound — the page includes a fallback button to start playback if autoplay is blocked.</p>
+
+  <div class="media-row">
+
+    <div class="media-card video-wrap" id="videoCard">
+      <strong>Video (custom width)</strong>
+      <video id="demoVideo" controls autoplay muted playsinline preload="auto" style="display:block;width:100%;height:auto;border-radius:8px;">
+        <!-- Replace the src with your own MP4/WebM. 'muted' is included because many browsers require muted autoplay. -->
+        <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <div class="notice">This video uses <code>autoplay</code> and <code>muted</code> (muted is often required for autoplay to work). Use the button below to unmute/play if autoplay was blocked.</div>
+      <div class="play-fallback">
+        <button class="btn" id="unmuteVideoBtn">Unmute / Play Video</button>
+        <button class="btn" id="downloadVideoBtn">Open Video Source</button>
+      </div>
+    </div>
+
+    <div class="media-card audio-wrap" id="audioCard">
+      <strong>Audio (custom width)</strong>
+      <audio id="demoAudio" controls autoplay preload="auto" style="display:block;width:100%;margin-top:.5rem;">
+        <!-- Autoplay of audible audio is often blocked — you can keep this attribute but expect browsers to require a user gesture. -->
+        <source src="https://interactive-examples.mdn.mozilla.net/media/examples/t-rex-roar.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+
+      <div class="notice">Browsers often block autoplay for audible audio. If autoplay fails, click the button below to start playback.</div>
+      <div class="play-fallback">
+        <button class="btn" id="playAudioBtn">Play Audio</button>
+        <button class="btn" id="downloadAudioBtn">Open Audio Source</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Grab elements
+    const video = document.getElementById('demoVideo');
+    const audio = document.getElementById('demoAudio');
+    const unmuteVideoBtn = document.getElementById('unmuteVideoBtn');
+    const playAudioBtn = document.getElementById('playAudioBtn');
+    const downloadVideoBtn = document.getElementById('downloadVideoBtn');
+    const downloadAudioBtn = document.getElementById('downloadAudioBtn');
+
+    // Helper: attempt autoplay and handle promise rejection
+    function tryPlay(element){
+      if (!element) return;
+      const playPromise = element.play();
+      if (playPromise !== undefined){
+        playPromise.then(()=>{
+          // autoplay succeeded
+          // optionally update UI
+        }).catch((err)=>{
+          // autoplay was blocked (common for audible audio)
+          // console.warn('Autoplay blocked:', err);
+        });
+      }
+    }
+
+    // On load, try to play both
+    window.addEventListener('load', ()=>{
+      tryPlay(video);
+      tryPlay(audio);
+    });
+
+    // Unmute & play video on user click (this will satisfy browser gesture policies)
+    unmuteVideoBtn.addEventListener('click', ()=>{
+      if (video){
+        video.play = true;
+        video.play().catch(()=>{
+          // ignore; user gesture required
+        });
+      }
+    });
+
+    // Play audio on user click
+    playAudioBtn.addEventListener('click', ()=>{
+      if (audio){
+        audio.play().catch(()=>{
+          // ignore
+        });
+      }
+    });
+
+    // Open sources in new tab (hands-off way to let user download / open the file)
+    downloadVideoBtn.addEventListener('click', ()=>{
+      const src = video.querySelector('source')?.src;
+      if (src) window.open(src, '_blank');
+    });
+    downloadAudioBtn.addEventListener('click', ()=>{
+      const src = audio.querySelector('source')?.src;
+      if (src) window.open(src, '_blank');
+    });
+
+    // Optional: allow runtime changes to widths via CSS variables (uncomment to use)
+    // document.documentElement.style.setProperty('--video-width','640px');
+    // document.documentElement.style.setProperty('--audio-width','420px');
+  </script>
+</body>
+</html>

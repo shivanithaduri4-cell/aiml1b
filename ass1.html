@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audio & Video Autoplay Demo</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #eef2f7;
+    padding: 2rem;
+    color: #222;
+    text-align: center;
+  }
+
+  h1 {
+    margin-bottom: 1.5rem;
+  }
+
+  .media-box {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    margin: 1rem auto;
+    max-width: 900px;
+  }
+
+  /* custom widths */
+  video {
+    width: 800px;
+    max-width: 100%;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  audio {
+    width: 500px;
+    max-width: 100%;
+    margin-top: 1rem;
+  }
+
+  button {
+    margin-top: 10px;
+    padding: 8px 14px;
+    background: #0078ff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<h1>🎵 Audio & 🎥 Video with Autoplay</h1>
+
+<div class="media-box">
+  <h2>Video (Autoplays Muted)</h2>
+  <video id="myVideo" controls autoplay muted playsinline preload="auto">
+    <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <button id="unmuteBtn">🔊 Unmute Video</button>
+</div>
+
+<div class="media-box">
+  <h2>Audio (Autoplays / Click if blocked)</h2>
+  <audio id="myAudio" controls autoplay preload="auto">
+    <source src="https://interactive-examples.mdn.mozilla.net/media/examples/t-rex-roar.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  <button id="playAudioBtn">▶️ Play Audio</button>
+</div>
+
+<script>
+  const video = document.getElementById('myVideo');
+  const audio = document.getElementById('myAudio');
+  const unmuteBtn = document.getElementById('unmuteBtn');
+  const playAudioBtn = document.getElementById('playAudioBtn');
+
+  // Try autoplay both
+  window.addEventListener('load', () => {
+    video.play().catch(()=>{});
+    audio.play().catch(()=>{}); // Some browsers may block this
+  });
+
+  // Unmute video manually
+  unmuteBtn.addEventListener('click', () => {
+    video.muted = false;
+    video.play();
+  });
+
+  // Play audio manually if autoplay blocked
+  playAudioBtn.addEventListener('click', () => {
+    audio.play();
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CSS3 Animations</title>
+<style>
+div{
+  width:100px; height:100px; margin:30px auto;
+  background:#4CAF50; border-radius:10px;
+  animation: moveBox 3s infinite alternate;
+}
+@keyframes moveBox{
+  0%   {transform: translateX(0); background:#4CAF50;}
+  50%  {transform: translateX(100px); background:#2196F3;}
+  100% {transform: translateX(0); background:#FF5722;}
+}
+</style>
+</head>
+<body>
+
+<h3 style="text-align:center;">CSS3 Animation Demo</h3>
+<div></div>
+
+</body>
+</html>
